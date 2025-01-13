@@ -1,0 +1,24 @@
+name: 'DepsHub'
+author: 'DepsHub'
+description: 'Runs DepsHub on your repository'
+inputs:
+  path:
+    description: 'Path to run DepsHub on'
+    required: false
+    default: '.'
+  config:
+    description: 'Path to the configuration file'
+    required: false
+    default: '.'
+runs:
+  using: "composite"
+  steps:
+    - name: Show inputs
+      run: echo "Running DepsHub on ${{ inputs.path }} with config ${{ inputs.config }}"
+      shell: bash
+    - name: Install DepsHub
+      run: curl -fsSL https://raw.githubusercontent.com/DepsHubHQ/depshub/refs/heads/main/scripts/install.sh | bash
+      shell: bash
+    - name: Run DepsHub
+      run: depshub lint --path ${{ inputs.path }} --config ${{ inputs.config }}
+      shell: bash
