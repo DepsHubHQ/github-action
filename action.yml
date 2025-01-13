@@ -20,5 +20,5 @@ runs:
       run: curl -fsSL https://raw.githubusercontent.com/DepsHubHQ/depshub/refs/heads/main/scripts/install.sh | bash
       shell: bash
     - name: Run DepsHub
-      run: depshub lint --path ${{ inputs.path }} --config ${{ inputs.config }}
+      run: depshub lint ${{ inputs.path }} --config ${{ inputs.config }}
       shell: bash

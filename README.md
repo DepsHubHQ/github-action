@@ -24,8 +24,8 @@ jobs:
       - name: Run DepsHub
         uses: DepsHubHQ/depshub-action@v1
         with:
-          path: './src' # optional
-            config: './depshub-config.yml' # optional
+          path: './src'                    # optional
+          config: './depshub-config.yml'   # optional
 ```
 
 
