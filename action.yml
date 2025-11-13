@@ -60,9 +60,10 @@ runs:
         BASE_URL: ${{ inputs.base-url }}
       run: |
         PROMPT=$(./depshub-mcp prompt)
-        PROMPT="${PROMPT//$'\n'/'%0A'}"
-        echo $PROMPT
-        echo "prompt=$PROMPT" >> $GITHUB_OUTPUT
+        PROMPT_FILE="$GITHUB_WORKSPACE/prompt.txt"
+        printf "%s" "$PROMPT" > "$PROMPT_FILE"
+        echo "prompt=$PROMPT_FILE" >> "$GITHUB_OUTPUT"
+        echo "Saved prompt to: $PROMPT_FILE"
 
     - name: Build Codex MCP arguments
       id: args
