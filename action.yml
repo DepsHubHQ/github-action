@@ -68,4 +68,4 @@ runs:
       id: args
       shell: bash
       run: |
-        echo "codex_args=-c 'mcp_servers.depshub.command=\"./depshub-mcp\"' -c 'mcp_servers.depshub.args=[\"start\"]' -c 'sandbox_workspace_write.network_access=true'" >> $GITHUB_OUTPUT
+        echo "codex_args=-c 'mcp_servers.depshub.command=\"./depshub-mcp\"' -c 'mcp_servers.depshub.args=[\"start\"]' -c 'sandbox_workspace_write.network_access=true' -c 'shell_environment_policy=[\"PATH\", \"HOME\", \"GH_TOKEN\"]'" >> $GITHUB_OUTPUT
