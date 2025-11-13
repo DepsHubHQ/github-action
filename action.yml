@@ -61,6 +61,7 @@ runs:
       run: |
         PROMPT=$(./depshub-mcp prompt)
         PROMPT="${PROMPT//$'\n'/'%0A'}"
+        echo $PROMPT
         echo "prompt=$PROMPT" >> $GITHUB_OUTPUT
 
     - name: Build Codex MCP arguments
