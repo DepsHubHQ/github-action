@@ -70,3 +70,9 @@ runs:
       shell: bash
       run: |
         echo "codex_args=-c 'mcp_servers.depshub.command=\"./depshub-mcp\"' -c 'mcp_servers.depshub.args=[\"start\"]' -c 'sandbox_workspace_write.network_access=true' -c 'shell_environment_policy.include_only=[\"PATH\", \"HOME\", \"GH_TOKEN\"]'" >> $GITHUB_OUTPUT
+
+    - name: Set Git identity
+      shell: bash
+      run: |
+        git config user.name "DepsHub"
+        git config user.email "support@depshub.com"
