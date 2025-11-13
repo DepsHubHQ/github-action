@@ -26,4 +26,5 @@ runs:
   env:
     BASE_URL: ${{ inputs.base-url }}
   args:
+    - ./main
     - start
