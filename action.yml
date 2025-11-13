@@ -1,27 +1,70 @@
-name: 'DepsHub MCP'
-description: 'Runs DepsHub MCP to analyze and suggest dependency updates'
-author: 'DepsHub'
+name: "DepsHub MCP"
+description: "Installs the latest DepsHub MCP binary and exposes Codex config"
+author: "DepsHub"
 branding:
-  icon: 'package'
-  color: 'green'
+  icon: "package"
+  color: "green"
 
 inputs:
-  repo-token:
-    description: 'GitHub token for repo access'
-    required: false
   base-url:
-    description: 'Base API URL for DepsHub'
+    description: "Base API URL for DepsHub MCP"
     required: false
-    default: 'https://mcp-api.depshub.com'
+    default: "https://mcp-api.depshub.com"
 
 outputs:
   codex_prompt:
-    description: 'Prompt text for OpenAI Codex action'
+    description: "Prompt text for OpenAI Codex"
+    value: ${{ steps.prompt.outputs.prompt }}
+
   codex_args:
-    description: 'Arguments for Codex generation'
+    description: "Arguments for MCP configuration"
+    value: ${{ steps.args.outputs.codex_args }}
 
 runs:
-  using: 'docker'
-  image: 'docker://ghcr.io/depshubhq/mcp:latest'
-  env:
-    BASE_URL: ${{ inputs.base-url }}
+  using: "composite"
+  steps:
+    - name: Detect architecture
+      id: arch
+      shell: bash
+      run: |
+        ARCH=$(uname -m)
+        case "$ARCH" in
+          x86_64)  ARCH=amd64 ;;
+          arm64|aarch64) ARCH=arm64 ;;
+          *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+        esac
+        echo "arch=$ARCH" >> $GITHUB_OUTPUT
+
+    - name: Find latest DepsHub MCP release
+      id: version
+      shell: bash
+      run: |
+        TAG=$(curl -s https://api.github.com/repos/DepsHubHQ/mcp/releases/latest \
+          | grep '"tag_name":' \
+          | sed -E 's/.*"([^"]+)".*/\1/')
+        echo "Latest MCP version: $TAG"
+        echo "version=$TAG" >> $GITHUB_OUTPUT
+
+    - name: Download latest MCP binary
+      shell: bash
+      run: |
+        URL="https://github.com/DepsHubHQ/mcp/releases/download/${{ steps.version.outputs.version }}/depshub-linux-${{ steps.arch.outputs.arch }}"
+        echo "Downloading MCP binary: $URL"
+        curl -L "$URL" -o depshub-mcp
+        chmod +x depshub-mcp
+
+    - name: Load dynamic prompt from MCP
+      id: prompt
+      shell: bash
+      env:
+        BASE_URL: ${{ inputs.base-url }}
+      run: |
+        PROMPT=$(./depshub-mcp prompt)
+        PROMPT="${PROMPT//$'\n'/'%0A'}"
+        echo "prompt=$PROMPT" >> $GITHUB_OUTPUT
+
+    - name: Build Codex MCP arguments
+      id: args
+      shell: bash
+      run: |
+        echo "codex_args=-c 'mcp_servers.depshub.command=\"./depshub-mcp\"' -c 'mcp_servers.depshub.args=[\"start\"]'" >> $GITHUB_OUTPUT
