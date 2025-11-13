@@ -1,29 +1,29 @@
 name: 'DepsHub MCP'
-  description: 'Runs DepsHub MCP to analyze and suggest dependency updates'
-  author: 'DepsHub'
-  branding:
-    icon: 'package'
-    color: 'green'
+description: 'Runs DepsHub MCP to analyze and suggest dependency updates'
+author: 'DepsHub'
+branding:
+  icon: 'package'
+  color: 'green'
 
-  inputs:
-    repo-token:
-      description: 'GitHub token for repo access'
-      required: false
-    base-url:
-      description: 'Base API URL for DepsHub'
-      required: false
-      default: 'https://mcp-api.depshub.com'
+inputs:
+  repo-token:
+    description: 'GitHub token for repo access'
+    required: false
+  base-url:
+    description: 'Base API URL for DepsHub'
+    required: false
+    default: 'https://mcp-api.depshub.com'
 
-  outputs:
-    codex_prompt:
-      description: 'Prompt text for OpenAI Codex action'
-    codex_args:
-      description: 'Arguments for Codex generation'
+outputs:
+  codex_prompt:
+    description: 'Prompt text for OpenAI Codex action'
+  codex_args:
+    description: 'Arguments for Codex generation'
 
-  runs:
-    using: 'docker'
-    image: 'ghcr.io/depshubhq/mcp'
-    env:
-      BASE_URL: ${{ inputs.base-url }}
-    args:
-      - start
+runs:
+  using: 'docker'
+  image: 'ghcr.io/depshubhq/mcp'
+  env:
+    BASE_URL: ${{ inputs.base-url }}
+  args:
+    - start
