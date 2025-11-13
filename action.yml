@@ -25,6 +25,3 @@ runs:
   image: 'docker://ghcr.io/depshubhq/mcp:latest'
   env:
     BASE_URL: ${{ inputs.base-url }}
-  args:
-    - main
-    - start
