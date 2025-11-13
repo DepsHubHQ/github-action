@@ -22,7 +22,7 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'ghcr.io/depshubhq/mcp:latest'
+  image: 'docker://ghcr.io/depshubhq/mcp:latest'
   env:
     BASE_URL: ${{ inputs.base-url }}
   args:
