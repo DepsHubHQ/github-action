@@ -1,24 +1,29 @@
-name: 'DepsHub'
-author: 'DepsHub'
-description: 'Runs DepsHub on your repository'
-inputs:
-  path:
-    description: 'Path to run DepsHub on'
-    required: false
-    default: '.'
-  config:
-    description: 'Path to the configuration file'
-    required: false
-    default: '.'
-runs:
-  using: "composite"
-  steps:
-    - name: Show inputs
-      run: echo "Running DepsHub on ${{ inputs.path }} with config ${{ inputs.config }}"
-      shell: bash
-    - name: Install DepsHub
-      run: curl -fsSL https://raw.githubusercontent.com/DepsHubHQ/depshub/refs/heads/main/scripts/install.sh | bash
-      shell: bash
-    - name: Run DepsHub
-      run: depshub lint ${{ inputs.path }} --config ${{ inputs.config }}
-      shell: bash
+name: 'DepsHub MCP'
+  description: 'Runs DepsHub MCP to analyze and suggest dependency updates'
+  author: 'DepsHub'
+  branding:
+    icon: 'package'
+    color: 'green'
+
+  inputs:
+    repo-token:
+      description: 'GitHub token for repo access'
+      required: false
+    base-url:
+      description: 'Base API URL for DepsHub'
+      required: false
+      default: 'https://mcp-api.depshub.com'
+
+  outputs:
+    codex_prompt:
+      description: 'Prompt text for OpenAI Codex action'
+    codex_args:
+      description: 'Arguments for Codex generation'
+
+  runs:
+    using: 'docker'
+    image: 'ghcr.io/depshubhq/mcp'
+    env:
+      BASE_URL: ${{ inputs.base-url }}
+    args:
+      - start
